@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Animation with Robot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #000428, #0c1445, #1a237e, #000428);
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .tech-grid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+            background: 
+                linear-gradient(to bottom, rgba(11, 32, 63, 0.8), rgba(8, 48, 107, 0.6)),
+                repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(0, 195, 255, 0.1) 19px, rgba(0, 195, 255, 0.1) 20px),
+                repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(0, 195, 255, 0.1) 19px, rgba(0, 195, 255, 0.1) 20px);
+            box-shadow: inset 0 0 30px rgba(0, 195, 255, 0.3);
+        }
+
+        .circuit-lines {
+            position: absolute;
+            bottom: 40%;
+            width: 100%;
+            height: 20%;
+            background: 
+                linear-gradient(to top, rgba(13, 20, 41, 0.9), rgba(8, 15, 44, 0.9)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0,50 L100,50 M50,0 L50,100" stroke="rgba(0, 195, 255, 0.2)" stroke-width="0.5" fill="none"/></svg>');
+            opacity: 0.7;
+        }
+
+        .data-flow {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 15%;
+            background: rgba(0, 123, 255, 0.4);
+            opacity: 0.7;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 123, 255, 0.6);
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 123, 255, 0.6); }
+            100% { opacity: 0.8; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 0 50px rgba(0, 123, 255, 0.8); }
+        }
+
+        .data-reflection {
+            position: absolute;
+            bottom: 15%;
+            width: 100%;
+            height: 10%;
+            background: linear-gradient(to bottom, rgba(0, 123, 255, 0.4), transparent);
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><circle cx="10" cy="15" r="0.5" fill="rgba(0, 195, 255, 0.8)" opacity="0.8"/><circle cx="30" cy="25" r="0.7" fill="rgba(0, 195, 255, 0.9)" opacity="0.9"/><circle cx="50" cy="10" r="0.8" fill="rgba(0, 195, 255, 0.7)" opacity="0.7"/><circle cx="70" cy="30" r="0.5" fill="rgba(0, 195, 255, 0.8)" opacity="0.8"/><circle cx="90" cy="5" r="0.8" fill="rgba(0, 195, 255, 0.6)" opacity="0.6"/><circle cx="15" cy="60" r="1.1" fill="rgba(0, 195, 255, 0.7)" opacity="0.7"/><circle cx="40" cy="70" r="0.6" fill="rgba(0, 195, 255, 0.9)" opacity="0.9"/><circle cx="65" cy="80" r="0.9" fill="rgba(0, 195, 255, 0.8)" opacity="0.8"/><circle cx="85" cy="65" r="1.3" fill="rgba(0, 195, 255, 0.6)" opacity="0.6"/><circle cx="110" cy="20" r="0.9" fill="rgba(0, 195, 255, 0.7)" opacity="0.7"/><circle cx="130" cy="45" r="0.8" fill="rgba(0, 195, 255, 0.8)" opacity="0.8"/><circle cx="150" cy="15" r="1.0" fill="rgba(0, 195, 255, 0.6)" opacity="0.6"/><circle cx="170" cy="30" r="0.7" fill="rgba(0, 195, 255, 0.9)" opacity="0.9"/><circle cx="190" cy="10" r="1.1" fill="rgba(0, 195, 255, 0.7)" opacity="0.7"/><circle cx="210" cy="50" r="0.6" fill="rgba(0, 195, 255, 0.8)" opacity="0.8"/><circle cx="230" cy="70" r="0.9" fill="rgba(0, 195, 255, 0.6)" opacity="0.6"/><circle cx="250" cy="40" r="1.0" fill="rgba(0, 195, 255, 0.7)" opacity="0.7"/><circle cx="270" cy="65" r="0.8" fill="rgba(0, 195, 255, 0.9)" opacity="0.9"/><circle cx="290" cy="25" r="1.2" fill="rgba(0, 195, 255, 0.7)" opacity="0.7"/></svg>') repeat;
+            animation: moveStars 120s linear infinite;
+        }
+
+        @keyframes moveStars {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-66.666%); }
+        }
+
+        .data-node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #00c3ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00c3ff, 0 0 20px #00c3ff;
+            opacity: 0;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin-top: 5rem;
+            backdrop-filter: blur(5px);
+            transform: translateZ(20px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+            background: linear-gradient(to right, #00c3ff, #007bff, #004e92);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .server-node {
+            position: absolute;
+            top: 10%;
+            right: 15%;
+            width: 80px;
+            height: 80px;
+            background: #007bff;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #007bff, 0 0 80px rgba(0, 123, 255, 0.5);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .server-node::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+        }
+
+        .server-node::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+        }
+
+        .instructions {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .instructions h2 {
+            margin-bottom: 1rem;
+            color: #00c3ff;
+        }
+
+        .instructions ul {
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .instructions li {
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .robot {
+            position: absolute;
+            bottom: 20%;
+            left: 10%;
+            width: 100px;
+            height: 150px;
+            transform: translateX(-50%);
+            animation: robotWalk 20s linear infinite;
+            z-index: 5;
+        }
+
+        .robot-head {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00c3ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+        }
+
+        .robot-eye {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #00c3ff;
+            border-radius: 50%;
+            top: 15px;
+            box-shadow: 0 0 10px #00c3ff;
+            animation: eyeBlink 5s infinite;
+        }
+
+        .robot-eye.left {
+            left: 15px;
+        }
+
+        .robot-eye.right {
+            right: 15px;
+        }
+
+        .robot-body {
+            position: absolute;
+            top: 45px;
+            left: 15px;
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00c3ff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+        }
+
+        .robot-arm {
+            position: absolute;
+            width: 10px;
+            height: 60px;
+            background: #00c3ff;
+            top: 50px;
+            transform-origin: top center;
+            box-shadow: 0 0 10px #00c3ff;
+        }
+
+        .robot-arm.left {
+            left: 0;
+            animation: armSwingLeft 2s infinite alternate;
+        }
+
+        .robot-arm.right {
+            right: 0;
+            animation: armSwingRight 2s infinite alternate;
+        }
+
+        .robot-leg {
+            position: absolute;
+            width: 10px;
+            height: 60px;
+            background: #007bff;
+            top: 110px;
+            transform-origin: top center;
+            box-shadow: 0 0 10px #007bff;
+        }
+
+        .robot-leg.left {
+            left: 25px;
+            animation: legMoveLeft 1s infinite alternate;
+        }
+
+        .robot-leg.right {
+            right: 25px;
+            animation: legMoveRight 1s infinite alternate;
+        }
+
+        @keyframes robotWalk {
+            0% { left: 10%; }
+            100% { left: 90%; }
+        }
+
+        @keyframes armSwingLeft {
+            0% { transform: rotate(-30deg); }
+            100% { transform: rotate(30deg); }
+        }
+
+        @keyframes armSwingRight {
+            0% { transform: rotate(30deg); }
+            100% { transform: rotate(-30deg); }
+        }
+
+        @keyframes legMoveLeft {
+            0% { transform: rotate(-15deg); }
+            100% { transform: rotate(15deg); }
+        }
+
+        @keyframes legMoveRight {
+            0% { transform: rotate(15deg); }
+            100% { transform: rotate(-15deg); }
+        }
+
+        @keyframes eyeBlink {
+            0%, 40%, 80% { height: 10px; }
+            20%, 60%, 100% { height: 2px; }
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: rgba(0, 123, 255, 0.3);
+            border: 1px solid #00c3ff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 195, 255, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 195, 255, 0.4);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-10px) translateX(-5px); }
+            50% { transform: translateY(0) translateX(-10px); }
+            75% { transform: translateY(-10px) translateX(5px); }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 1.5rem;
+                margin-top: 2rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .server-node {
+                width: 60px;
+                height: 60px;
+                top: 5%;
+                right: 10%;
+            }
+            
+            .robot {
+                width: 70px;
+                height: 105px;
+            }
+            
+            .robot-head {
+                width: 35px;
+                height: 35px;
+                left: 17.5px;
+            }
+            
+            .robot-body {
+                width: 49px;
+                height: 49px;
+                left: 10.5px;
+            }
+            
+            .robot-arm, .robot-leg {
+                width: 7px;
+            }
+            
+            .robot-arm {
+                height: 42px;
+            }
+            
+            .robot-leg {
+                height: 42px;
+                top: 77px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="stars"></div>
+        <div class="server-node"></div>
+        <div class="tech-grid"></div>
+        <div class="circuit-lines"></div>
+        <div class="data-flow"></div>
+        <div class="data-reflection"></div>
+        <!-- Data nodes will be generated by JavaScript -->
+        
+        <!-- Robot Character -->
+        <div class="robot">
+            <div class="robot-head">
+                <div class="robot-eye left"></div>
+                <div class="robot-eye right"></div>
+            </div>
+            <div class="robot-body">
+                <div class="robot-arm left"></div>
+                <div class="robot-arm right"></div>
+            </div>
+            <div class="robot-leg left"></div>
+            <div class="robot-leg right"></div>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>Tech Animation</h1>
+        <p>Futuristic landscape with animated robot character and data nodes</p>
+        
+        <div class="instructions">
+            <h2>Interactive Controls</h2>
+            <p>Use the buttons below to control the animation:</p>
+            
+            <div class="control-panel">
+                <button class="control-btn" id="addNodes">Add Data Nodes</button>
+                <button class="control-btn" id="changeSpeed">Change Speed</button>
+                <button class="control-btn" id="reset">Reset Scene</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate data nodes
+        function createDataNodes(count) {
+            const scene = document.querySelector('.scene');
+            
+            for (let i = 0; i < count; i++) {
+                const node = document.createElement('div');
+                node.classList.add('data-node');
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = 20 + Math.random() * 60; // Keep nodes in the middle of the view
+                node.style.left = `${left}vw`;
+                node.style.top = `${top}vh`;
+                
+                // Random size
+                const size = 3 + Math.random() * 7;
+                node.style.width = `${size}px`;
+                node.style.height = `${size}px`;
+                
+                // Random animation
+                const duration = 2 + Math.random() * 3;
+                const delay = Math.random() * 5;
+                
+                node.style.animation = `
+                    flicker ${duration}s infinite ${delay}s,
+                    moveAround ${duration * 3}s infinite ${delay}s
+                `;
+                
+                scene.appendChild(node);
+            }
+        }
+
+        // Add CSS keyframes for data node animation
+        function addDataNodeKeyframes() {
+            const style = document.createElement('style');
+            
+            style.textContent = `
+                @keyframes flicker {
+                    0%, 100% { 
+                        opacity: 0; 
+                        transform: scale(0.1);
+                    }
+                    10%, 80% { 
+                        opacity: ${0.3 + Math.random() * 0.7}; 
+                        transform: scale(${0.5 + Math.random() * 1.5});
+                    }
+                    40% { 
+                        opacity: ${0.7 + Math.random() * 0.3}; 
+                        transform: scale(${0.8 + Math.random() * 1.2});
+                    }
+                }
+                
+                @keyframes moveAround {
+                    0%, 100% { 
+                        transform: translate(0, 0);
+                    }
+                    25% { 
+                        transform: translate(${Math.random() * 40 - 20}px, ${Math.random() * 20 - 10}px);
+                    }
+                    50% { 
+                        transform: translate(${Math.random() * 60 - 30}px, ${Math.random() * 30 - 15}px);
+                    }
+                    75% { 
+                        transform: translate(${Math.random() * 40 - 20}px, ${Math.random() * 20 - 10}px);
+                    }
+                }
+            `;
+            
+            document.head.appendChild(style);
+        }
+
+        // Initialize the scene
+        document.addEventListener('DOMContentLoaded', () => {
+            addDataNodeKeyframes();
+            createDataNodes(30); // Create 30 data nodes
+            
+            // Add event listeners for controls
+            document.getElementById('addNodes').addEventListener('click', () => {
+                createDataNodes(10);
+            });
+            
+            const stars = document.querySelector('.stars');
+            let speed = 120;
+            document.getElementById('changeSpeed').addEventListener('click', () => {
+                speed = speed === 120 ? 60 : speed === 60 ? 240 : 120;
+                stars.style.animation = `moveStars ${speed}s linear infinite`;
+                
+                // Also change robot speed
+                const robot = document.querySelector('.robot');
+                const newSpeed = speed === 60 ? 10 : speed === 120 ? 20 : 40;
+                robot.style.animation = `robotWalk ${newSpeed}s linear infinite`;
+            });
+            
+            document.getElementById('reset').addEventListener('click', () => {
+                // Remove all data nodes
+                const nodes = document.querySelectorAll('.data-node');
+                nodes.forEach(node => node.remove());
+                
+                // Reset star speed
+                speed = 120;
+                stars.style.animation = `moveStars ${speed}s linear infinite`;
+                
+                // Reset robot speed
+                const robot = document.querySelector('.robot');
+                robot.style.animation = `robotWalk 20s linear infinite`;
+                
+                // Add initial data nodes
+                createDataNodes(30);
+            });
+        });
+    </script>
+</body>
+</html>
