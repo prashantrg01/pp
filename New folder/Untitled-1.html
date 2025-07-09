@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A calming, magical animated webpage featuring a starry mountain lake with fireflies." />
+  <title>Starry Mountain Lake</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+      background: black;
+    }
+
+    /* VIDEO BACKGROUND */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    /* STAR & REFLECTION LAYERS */
+    .star-layer, .reflected-stars, .fireflies {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .reflected-stars {
+      height: 50%;
+      top: auto;
+      bottom: 0;
+      transform: scaleY(-1);
+      filter: blur(2px);
+      opacity: 0.4;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0.9;
+      animation: driftStars 100s linear infinite;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes driftStars {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(100vw); }
+    }
+
+    /* FIREFLIES */
+    .firefly {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 150, 0.9);
+      box-shadow: 0 0 20px 6px rgba(255, 255, 180, 0.7);
+      opacity: 0;
+      animation: flicker 5s infinite ease-in-out, fly 20s infinite ease-in-out;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0; }
+      25% { opacity: 0.6; }
+      50% { opacity: 1; }
+      75% { opacity: 0.3; }
+    }
+
+    @keyframes fly {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(20px, -10px); }
+      50% { transform: translate(-10px, 10px); }
+      75% { transform: translate(15px, -5px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .controls {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 10;
+      font-size: 0.9rem;
+    }
+
+    .controls input {
+      margin-left: 10px;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      padding: 100px 20px;
+      margin-top: 80px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px);
+      border-radius: 16px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .firefly, .star {
+        transform: scale(0.8);
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body aria-label="A tranquil animated scene of a starry mountain lake with fireflies.">
+
+  <!-- ✅ VIDEO BACKGROUND -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="bg.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- ✅ CONTROLS -->
+  <div class="controls">
+    <label>
+      Pause animations
+      <input type="checkbox" id="toggle-animations" />
+    </label>
+  </div>
+
+  <!-- ✅ HERO SECTION -->
+  <section class="hero" role="region" aria-label="Hero section with welcome message">
+    <h1>Welcome to the Night Sky</h1>
+    <p>Experience the magic of stars and fireflies under the tranquil mountain sky.</p>
+  </section>
+
+  <!-- ✅ ANIMATION LAYERS -->
+  <div class="star-layer" aria-hidden="true"></div>
+  <div class="reflected-stars" aria-hidden="true"></div>
+  <div class="fireflies" aria-hidden="true"></div>
+
+  <!-- ✅ SCRIPT -->
+  <script>
+    const starsContainer = document.querySelector('.star-layer');
+    const reflectedContainer = document.querySelector('.reflected-stars');
+    const firefliesContainer = document.querySelector('.fireflies');
+    const toggleAnimations = document.getElementById('toggle-animations');
+
+    function createStars(count, container) {
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDuration = `${80 + Math.random() * 40}s`;
+        container.appendChild(star);
+      }
+    }
+
+    function createFireflies(count) {
+      for (let i = 0; i < count; i++) {
+        const firefly = document.createElement('div');
+        firefly.className = 'firefly';
+        firefly.style.top = `${Math.random() * 100}%`;
+        firefly.style.left = `${Math.random() * 100}%`;
+        firefly.style.animationDelay = `${Math.random() * 5}s`;
+        firefly.style.animationDuration = `${5 + Math.random() * 5}s, 20s`;
+        firefliesContainer.appendChild(firefly);
+      }
+    }
+
+    createStars(150, starsContainer);
+    createStars(150, reflectedContainer);
+    createFireflies(60);
+
+    toggleAnimations.addEventListener('change', (e) => {
+      const isPaused = e.target.checked;
+      document.querySelectorAll('.star, .firefly').forEach(el => {
+        el.style.animationPlayState = isPaused ? 'paused' : 'running';
+      });
+    });
+  </script>
+</body>
+</html>
